@@ -14,12 +14,17 @@
 import * as d3 from "d3";
 
 import tables from "@/assets/data/tables.json";
-import legend from "@/assets/data/legend.json";
 
 import MapSvg from "@/assets/images/map.svg";
 import TableSvg from "@/assets/images/workPlace.svg";
 
 export default {
+  props: {
+    legend: {
+      type: Array,
+      default: () => [],
+    },
+  },
   components: {
     MapSvg,
     TableSvg,
@@ -33,14 +38,17 @@ export default {
       tableSVG: null,
     };
   },
+  created() {
+    this.tables = tables;
+
+    this.updateLegendCounts();
+  },
   mounted() {
     this.isLoading = true;
 
     this.svg = d3.select(this.$refs.svg);
     this.g = this.svg.select(`g`);
     this.tableSVG = d3.select(this.$refs.table);
-
-    this.tables = tables;
 
     if (this.g) {
       this.drawTables();
@@ -71,10 +79,24 @@ export default {
           .html(this.tableSVG.html())
           .attr(
             "fill",
-            legend.find((it) => it.group_id === table.group_id)?.color ??
+            this.legend.find((it) => it.group_id === table.group_id)?.color ??
               "transparent"
           );
       });
+    },
+    updateLegendCounts() {
+      const tablesCount = this.tables.reduce((acc, table) => {
+        acc[table.group_id] = acc[table.group_id] ? acc[table.group_id] + 1 : 1;
+        return acc;
+      }, {});
+
+      this.$emit(
+        `update:legend`,
+        this.legend.map((it, index) => {
+          it.counter = tablesCount[index];
+          return it;
+        })
+      );
     },
   },
 };

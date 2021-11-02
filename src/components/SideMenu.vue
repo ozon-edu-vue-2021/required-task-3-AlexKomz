@@ -18,7 +18,7 @@
       <div v-if="!isUserOpenned" class="legend">
         <div class="legend__data">
           <div v-if="legend.length > 0" class="legend__items">
-            <Draggable v-model="legend">
+            <!-- <Draggable v-model="legend">
               <LegendItem
                 v-for="(item, index) in legend"
                 :key="index"
@@ -27,7 +27,8 @@
                 :counter="item.counter"
                 class="legend__item"
               />
-            </Draggable>
+            </Draggable> -->
+            <slot />
           </div>
           <span v-else class="legend--empty"> Список пуст </span>
         </div>
@@ -50,12 +51,9 @@
 
 <script>
 import { format } from "date-fns";
-import Draggable from "vuedraggable";
 import { Doughnut as PieChart } from "vue-chartjs";
 
-import LegendItem from "./SideMenu/LegendItem.vue";
 import PersonCard from "./SideMenu/PersonCard.vue";
-import legend from "@/assets/data/legend.json";
 
 export default {
   props: {
@@ -67,28 +65,19 @@ export default {
       type: Object,
       default: null,
     },
+    legend: {
+      type: Array,
+      default: () => [],
+    },
   },
   components: {
-    LegendItem,
     PersonCard,
-    Draggable,
     PieChart,
-  },
-  data() {
-    return {
-      legend: [],
-    };
-  },
-  created() {
-    this.loadLegend();
   },
   mounted() {
     this.makeChart();
   },
   methods: {
-    loadLegend() {
-      this.legend = legend;
-    },
     closeProfile() {
       this.$emit("update:isUserOpenned", false);
     },
@@ -187,7 +176,7 @@ h3 {
   display: flex;
   height: 100%;
 }
-
+/* 
 .content .legend .legend__items {
   flex: 1;
   width: 100%;
@@ -203,7 +192,7 @@ h3 {
 
 .content .legend .legend__items .legend__item.sortable-chosen {
   opacity: 25%;
-}
+} */
 
 .content .legend .legend--empty {
   align-self: center;

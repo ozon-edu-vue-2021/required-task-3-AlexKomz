@@ -1,21 +1,45 @@
 <template>
   <div id="app">
     <div class="office">
-      <Map />
-      <SideMenu />
+      <Map :legend="legend" />
+      <SideMenu :legend="legend">
+        <Draggable v-model="legend">
+          <LegendItem
+            v-for="(item, index) in legend"
+            :key="index"
+            :color="item.color"
+            :text="item.text"
+            :counter="item.counter"
+            class="legend__item"
+          />
+        </Draggable>
+      </SideMenu>
     </div>
   </div>
 </template>
 
 <script>
+import legend from "@/assets/data/legend.json";
+
+import Draggable from "vuedraggable";
+
 import Map from "./components/Map.vue";
 import SideMenu from "./components/SideMenu.vue";
+import LegendItem from "./components/SideMenu/LegendItem.vue";
 
 export default {
   name: "App",
   components: {
     Map,
     SideMenu,
+    LegendItem,
+    Draggable,
+  },
+  data: () => ({
+    legend: [],
+  }),
+  created() {
+    this.legend = legend;
   },
 };
 </script>
@@ -52,5 +76,23 @@ h3 {
   background: white;
   max-width: 1500px;
   margin: 0 auto;
+}
+
+/* From SideMenu */
+.content .legend .legend__items {
+  flex: 1;
+  width: 100%;
+}
+
+.content .legend .legend__items .legend__item:not(:first-child) {
+  margin-top: 16px;
+}
+
+.content .legend .legend__items .legend__item {
+  cursor: pointer;
+}
+
+.content .legend .legend__items .legend__item.sortable-chosen {
+  opacity: 25%;
 }
 </style>
