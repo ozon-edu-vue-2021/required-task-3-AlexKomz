@@ -1,5 +1,5 @@
 <template>
-  <div class="menu">
+  <div v-click-outside="clickOutside" class="menu">
     <div class="toolbar">
       <div class="toolbar__header">
         <template v-if="!isUserOpenned">
@@ -50,12 +50,16 @@
 </template>
 
 <script>
+import ClickOutside from "vue-click-outside";
 import { format } from "date-fns";
 import { Doughnut as PieChart } from "vue-chartjs";
 
 import PersonCard from "./SideMenu/PersonCard.vue";
 
 export default {
+  data: () => ({
+    hasOpenClick: false,
+  }),
   props: {
     isUserOpenned: {
       type: Boolean,
@@ -74,12 +78,26 @@ export default {
     PersonCard,
     PieChart,
   },
+  directives: {
+    ClickOutside,
+  },
   mounted() {
     this.makeChart();
   },
+  updated() {
+    if (!this.isUserOpenned) this.makeChart();
+  },
   methods: {
     closeProfile() {
-      this.$emit("update:isUserOpenned", false);
+      this.$emit("update:person", null);
+    },
+    clickOutside() {
+      if (this.isUserOpenned && this.hasOpenClick) {
+        this.closeProfile();
+        this.hasOpenClick = false;
+      } else if (this.isUserOpenned) {
+        this.hasOpenClick = true;
+      }
     },
     makeChart() {
       const legendChartData = {

@@ -1,8 +1,12 @@
 <template>
   <div id="app">
     <div class="office">
-      <Map :legend="legend" />
-      <SideMenu :legend="legend">
+      <Map :legend.sync="legend" @click="currentPerson = $event" />
+      <SideMenu
+        :isUserOpenned="!!currentPerson"
+        :person.sync="currentPerson"
+        :legend="legend"
+      >
         <Draggable v-model="legend">
           <LegendItem
             v-for="(item, index) in legend"
@@ -37,6 +41,7 @@ export default {
   },
   data: () => ({
     legend: [],
+    currentPerson: null,
   }),
   created() {
     this.legend = legend;

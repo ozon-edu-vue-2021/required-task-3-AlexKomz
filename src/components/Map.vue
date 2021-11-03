@@ -3,7 +3,7 @@
     <h3>Карта офиса</h3>
 
     <div v-if="!isLoading" class="map-root">
-      <MapSvg ref="svg" />
+      <MapSvg ref="svg" @click="tableClickHandler" />
       <TableSvg v-show="false" ref="table" />
     </div>
     <div v-else>Loading...</div>
@@ -14,6 +14,7 @@
 import * as d3 from "d3";
 
 import tables from "@/assets/data/tables.json";
+import people from "@/assets/data/people.json";
 
 import MapSvg from "@/assets/images/map.svg";
 import TableSvg from "@/assets/images/workPlace.svg";
@@ -36,10 +37,12 @@ export default {
       g: null,
       tables: [],
       tableSVG: null,
+      people: [],
     };
   },
   created() {
     this.tables = tables;
+    this.people = people;
 
     this.updateLegendCounts();
   },
@@ -59,6 +62,12 @@ export default {
     this.isLoading = false;
   },
   methods: {
+    tableClickHandler(event) {
+      const target = event.target.closest(`.employer-place`);
+      if (!target) return;
+      const person = this.people.find((person) => person._id === +target.id);
+      this.$emit(`click`, person);
+    },
     drawTables() {
       const svgTablesGroupPlace = this.g
         .append("g")
