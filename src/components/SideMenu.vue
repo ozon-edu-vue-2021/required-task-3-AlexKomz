@@ -89,12 +89,12 @@ export default {
   },
   methods: {
     closeProfile() {
+      this.hasOpenClick = false;
       this.$emit("update:person", null);
     },
     clickOutside() {
       if (this.isUserOpenned && this.hasOpenClick) {
         this.closeProfile();
-        this.hasOpenClick = false;
       } else if (this.isUserOpenned) {
         this.hasOpenClick = true;
       }
@@ -194,7 +194,7 @@ h3 {
   display: flex;
   height: 100%;
 }
-/* 
+/*
 .content .legend .legend__items {
   flex: 1;
   width: 100%;
