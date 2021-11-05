@@ -37,7 +37,7 @@
             {{ formatedDate }}
           </div>
 
-          <PieChart ref="chart" />
+          <LegendChart :legend="legend" />
         </div>
       </div>
       <div v-else class="profile">
@@ -52,9 +52,9 @@
 <script>
 import ClickOutside from "vue-click-outside";
 import { format } from "date-fns";
-import { Doughnut as PieChart } from "vue-chartjs";
 
 import PersonCard from "./SideMenu/PersonCard.vue";
+import LegendChart from "./SideMenu/LegendChart.vue";
 
 export default {
   data: () => ({
@@ -76,16 +76,10 @@ export default {
   },
   components: {
     PersonCard,
-    PieChart,
+    LegendChart,
   },
   directives: {
     ClickOutside,
-  },
-  mounted() {
-    this.makeChart();
-  },
-  updated() {
-    if (!this.isUserOpenned) this.makeChart();
   },
   methods: {
     closeProfile() {
@@ -98,27 +92,6 @@ export default {
       } else if (this.isUserOpenned) {
         this.hasOpenClick = true;
       }
-    },
-    makeChart() {
-      const legendChartData = {
-        labels: this.legend.map((it) => it.text),
-        datasets: [
-          {
-            label: "Легенда",
-            backgroundColor: this.legend.map((legendItem) => legendItem.color),
-            data: this.legend.map((legendItem) => legendItem.counter),
-          },
-        ],
-      };
-
-      const options = {
-        borderWidth: "10px",
-        legend: {
-          display: false,
-        },
-      };
-
-      this.$refs.chart.renderChart(legendChartData, options);
     },
   },
   computed: {
