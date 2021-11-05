@@ -9,8 +9,8 @@
       >
         <Draggable v-model="legend">
           <LegendItem
-            v-for="(item, index) in legend"
-            :key="index"
+            v-for="item in legend"
+            :key="item.group_id"
             :color="item.color"
             :text="item.text"
             :counter="item.counter"
